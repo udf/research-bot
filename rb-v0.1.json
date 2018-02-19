@@ -1,0 +1,7 @@
+{
+    "AI": {
+        "js": "rb-v0.1/researchbot.js",
+        "name": "Research Bot v0.1",
+        "tip": "Bot for v3.2+"
+    }
+}
