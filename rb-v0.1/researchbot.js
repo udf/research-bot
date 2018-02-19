@@ -332,9 +332,28 @@ function mainloop() {
 manage_eco = function() {
 	var last_power = 0;
 	return function() {
-		// TODO communist it up
-
 		var power = playerPower(me);
+
+		// if we have extra power, share it with our comrades
+		if (power >= 2000) {
+			// find the comrade with the least amount of power
+			var poorest_player = me;
+			playerData.forEach(function(player, player_id) {
+				if (player_id == me || !allianceExistsBetween(me, player_id))
+					return;
+				if (playerPower(player_id) < playerPower(poorest_player))
+					poorest_player = player_id;
+			});
+			if (poorest_player != me) {
+				// donate enough power to make us even
+				var donation = (playerPower(me) - playerPower(poorest_player)) / 2
+				if (donation >= 500) {
+					donatePower(donation, poorest_player);
+					power -= donation;
+				}
+			}
+		}
+
 		// if we lost power since the last call and we are below the threshhold,
 		// set a flag so that ensure_power() can try to build another derrick
 		if (power <= 0 || (power < last_power && power <= reserve_power)) {
